@@ -27,5 +27,12 @@ CommunityBoard<-HousingData$CommntyDst
 counts.boards <-table(NewHousing, CommunityBoard)
 barplot(counts.boards, main="New Housing by CB",
    xlab="Community Board")
+mean(counts.districts, trim = 0, na.rm = FALSE)
+mean(counts.boards, trim = 0, na.rm = FALSE)
+#Add Shape Files
+#install.packages("sf")
+library(sf)
+CouncilDistrictBoundaries<- st_read("nycc.shp")
+CBDistrictBoundaries<- st_read("nycd.shp")
 ```
 
