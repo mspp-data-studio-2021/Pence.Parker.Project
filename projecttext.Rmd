@@ -8,31 +8,37 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
 ```{r}
 #install.packages("tidyverse")
 library(tidyverse)
 #install.packages("gdata")
 library("gdata")
-HousingData<- read.csv("HousingDB_post2010_inactive_included.csv")
-head(HousingData)
-#rename variables
-CouncilDistrict<-HousingData$CouncilDst
-NewHousing<-HousingData$ClassANet
-#create council district and housing unit element
-counts.districts <- table(NewHousing, CouncilDistrict)
-barplot(counts.districts, main="New Housing by District",
-   xlab="Council District")
-#create community board and housing unit element
-CommunityBoard<-HousingData$CommntyDst
-counts.boards <-table(NewHousing, CommunityBoard)
-barplot(counts.boards, main="New Housing by CB",
-   xlab="Community Board")
-mean(counts.districts, trim = 0, na.rm = FALSE)
-mean(counts.boards, trim = 0, na.rm = FALSE)
-#Add Shape Files
 #install.packages("sf")
 library(sf)
-CouncilDistrictBoundaries<- st_read("nycc.shp")
-CBDistrictBoundaries<- st_read("nycd.shp")
+```
+
+
+```{r}
+HousingData<- read.csv("HousingDB_post2010_inactive_included.csv")
+head(HousingData)
+city.council.makeup.terms <- read.csv("data/city.council.database.xlsx - terms.csv")
+View(city_council_makeup_xlsx_terms)
+mean(counts.districts, trim = 0, na.rm = FALSE)
+mean(counts.boards, trim = 0, na.rm = FALSE)
+```
+
+Add Shape Files
+```{r}
+CouncilDistrictBoundaries<- st_read(file ="nycc.shp")
+CBDistrictBoundaries<- st_read(file="nycd.shp")
+```
+```{r}
+councildf<-group_by(HousingData, CouncilDst) %>%
+summarise(tot_new = sum(ClassANet))
+qplot(x = CouncilDst, y = tot_new, data = councildf, geom = "col")
+cbdf<-group_by(HousingData, CommntyDst) %>%
+summarise(tot_new = sum(ClassANet))
+qplot(x = CommntyDst, y = tot_new, data = cbdf, geom = "col")
 ```
 
