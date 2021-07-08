@@ -60,11 +60,29 @@ name.last <- sapply(names.split, function(x)
 ```
 
 
-merge data
+merge data attempt 1
 ```{r}
 post_2013_permits_dropped_splits$councilmember<- (post_2013_councilmembers$council.member if post_2013_permits_dropped_splits$CouncilDst = post_2013_councilmembers$district & (post_2013_permits_dropped_splits$PermitYear >= post_2013_councilmembers$start.date & post_2013_permits_dropped_splits$PermitYear<= post_2013_councilmembers$end.date)) 
                                                 
 ```
 
+merge data attempt 2
+```{r}
+left_join(post_2013_permits_dropped_splits, post_2013_councilmembers, by=c("CouncilDst","district")) %>%
+  rowwise() %>%
+  mutate(council.member = ifelse(between(PermitYear, start.date, end.date), council.member, NA)) %>%
+  select(-start.date, -end.date)
+```
 
+Renata merge attempt 1
+```{r}
+left_join(post_2013_permits_dropped_splits, post_2013_councilmembers, by = c("CouncilDst" = "district")) %>% 
+    filter(PermitYear %within% interval(start.date, end.date))
+```
+
+Renata merge attempt 2
+```{r}
+left_join(post_2013_permits_dropped_splits, post_2013_councilmembers, by = c("CouncilDst" = "district")) %>% 
+    filter(pmap_lgl(list(PermitYear, start.date, end.date), ~ ..1 %within% interval(..2, ..3)))
+```
 
