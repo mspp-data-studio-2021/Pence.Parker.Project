@@ -35,8 +35,15 @@ councilmemberdata$start.date <- as.Date(councilmemberdata$start.date, format = "
 councilmemberdata$end.date <- as.Date(councilmemberdata$end.date , format = "%m/%d/%Y")
 ```
 
+Drop project permits prior to 2014 due to redistricting and any projects permitted in years in which its district had two different councilors
 ```{r}
 post_2013_permits<- subset(HousingData, PermitYear >= 2014)
+
+post_2013_permits_dropped_splits<-subset(post_2013_permits, !(CouncilDst==9 & PermitYear==2017) & !(CouncilDst==12 & PermitYear==2020) & !(CouncilDst==17 & PermitYear==2016) & !(CouncilDst==23 & PermitYear==2015) & !(CouncilDst==24 & PermitYear==2020) & !(CouncilDst==28 & PermitYear==2017) & !(CouncilDst==31 & PermitYear==2020) & !(CouncilDst==37 & PermitYear==2020) & !(CouncilDst==45 & PermitYear==2019) & !(CouncilDst==51 & PermitYear==2015))
+```
+
+
+```{r}
 post_2013_councilmembers<- subset(councilmemberdata, start.date >= as.Date("2014-01-01"))
 ```
 
