@@ -1,0 +1,17 @@
+---
+title: "vizualization-code"
+author: "Pence"
+date: "7/7/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+councildf<-group_by(post2014permits, CouncilDst) %>%
+summarise(tot_new = sum(ClassANet))
+qplot(x = CouncilDst, y = tot_new, data = councildf, geom = "col")
+```
+
