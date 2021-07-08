@@ -27,22 +27,24 @@ head(councilmemberdata)
 Separate projects permitted prior to 2010
 
 *How do I save processed data as new data set in github?*
-```{r}
-post2014permits<- subset(HousingData, PermitYear >= 2014)
-
-
-```
 
 format start and end dates as dates
 ```{r}
-councilmemberdata$start.date <- as.Date(councilmemberdata$start.date , format = "%m/%d/%y")
+councilmemberdata$start.date <- as.Date(councilmemberdata$start.date, format = "%m/%d/%Y")
 
-councilmemberdata$end.date <- as.Date(councilmemberdata$end.date , format = "%m/%d/%y")
+councilmemberdata$end.date <- as.Date(councilmemberdata$end.date , format = "%m/%d/%Y")
 ```
+
+```{r}
+post_2013_permits<- subset(HousingData, PermitYear >= 2014)
+post_2013_councilmembers<- subset(councilmemberdata, start.date >= as.Date("2014-01-01"))
+```
+
 
 Clean council member names
 ```{r}
-names.split <- strsplit(unlist(councilmemberdata$council.member), " ")
+str_trim(post_2013_councilmembers$council.member, side = c("both"))
+names.split <- strsplit(unlist(post_2013_councilmembers$council.member), " ")
 
 name.first <- sapply(names.split, function(x) x[1])
 name.last <- sapply(names.split, function(x)
@@ -53,7 +55,7 @@ name.last <- sapply(names.split, function(x)
 
 merge data
 ```{r}
-
+developments-by-council-member<-group_by(post_2013_permits, CouncilDst)
 ```
 
 
