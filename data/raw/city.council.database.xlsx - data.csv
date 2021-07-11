@@ -1,4 +1,4 @@
-council member,district,start date,end date
+council.member,district,start.date,end.date
 Margaret S. Chin,1,1/1/2010,7/1/2021
 Rosie Mendez,2,1/1/2010,12/31/2017
 Carlina Rivera,2,1/1/2018,7/1/2021
@@ -103,13 +103,13 @@ Farah N. Louis,45,6/13/2019,7/1/2021
 Lewis A. Fidler,46,1/1/2010,12/31/2013
 Alan Maisel,46,1/1/2014,7/1/2021
 Domenic Recchia,47,1/1/2010,12/31/2013
-	Mark Treyger,47,1/1/2014,7/1/2021
+"	Mark Treyger",47,1/1/2014,7/1/2021
 Michael Chaim Nelson,48,1/1/2010,12/31/2013
 Chaim Deutsch,48,1/1/2014,4/27/2021
 vacant,48,4/28/2021,7/1/2021
 Debi Rose,49,1/1/2010,7/1/2021
 James Oddo,50,1/1/2010,12/31/2013
-	Steven Matteo,50,1/1/2014,7/1/2021
+"	Steven Matteo",50,1/1/2014,7/1/2021
 Vincent M. Ignizio,51,1/1/2010,7/10/2015
 vacant,51,7/11/2015,11/29/2015
 Joe Borelli,51,11/30/2015,7/1/2021
