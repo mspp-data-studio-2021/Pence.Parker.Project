@@ -27,12 +27,10 @@ left_join(post_2013_permits_dropped_splits_years_fixed, post_2013_councilmembers
 ```
 
 ```{r}
-
-zipF<-file.choose("data/raw/nyccitycouncildistricts_21b.zip") # lets you choose a file and save its file path in R (at least for windows)
-outDir<-"C:\Users\waddes\Documents\GitHub\Pence.Parker.Project\data\raw" # Define the folder where the zip file should be unzipped to 
-unzip(zipF,exdir=outDir)  # unzip your file 
-
+source(path("r", "01_download_cc_districts.R"))
+cc_districts_shp <- read_sf("data", "raw", 'nycc_21b")
 ```
+
 
 
 ```{r}
@@ -53,7 +51,7 @@ permits <- read_csv("data/raw/HousingDB_post2010_inactive_included.csv")
 ```{r}
 tmap_mode("view")
 tm_shape(permits_sf_ny)+
-tm_bubbles(col = "red",
+tm_bubbles(col = "council.member",
            alpha= 0.5,
            size = "ClassANet",
            scale = 0.2,
