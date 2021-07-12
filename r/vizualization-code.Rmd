@@ -25,3 +25,32 @@ Renata merge if I have to map
 left_join(post_2013_permits_dropped_splits_years_fixed, post_2013_councilmembers, by = c("CouncilDst" = "district")) %>% 
     filter(pmap_lgl(list(PermitYear, start.date, end.date), ~ ..1 %within% interval(..2, ..3)))
 ```
+
+```{r}
+permits_sf <- st_as_sf(permits_joined, coords = c("Longitude", "Latitude"), crs = 4326)
+
+permits_sf_ny <- st_transform(permits_sf, 2263)
+
+ggplot(permits_sf_ny) +
+  geom_sf() +
+  coord_sf(crs = 3587)
+
+tmap_mode("view")
+tm_shape(permits_sf_ny)+
+tm_bubbles(col = "red",
+           alpha= 0.5,
+           size = "ClassANet",
+           scale = 0.2,
+           border.col = "black",
+           border.lwd = 1)
+tm_shape(permits_sf_ny)+
+tm_dots(
+  col = "black",
+  size = 0.02,
+  shape = 19,
+  title = NA,
+  legend.show = FALSE,
+  legend.z = NA,
+)
+```
+  
