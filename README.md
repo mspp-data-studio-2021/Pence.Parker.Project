@@ -5,5 +5,3 @@ Question: Does the city council representative of a given district affect how mu
 <h4> Notes: </h4>
 
 1. New city council districts were drawn in 2013 meaning only data from 2014 onward can be used with current boundaries
-
-2. regular City council terms begin January 1 and end December 31. Data from irregular council terms (those beginning or ending in the middle of a year) have been excluded
