@@ -1,0 +1,17 @@
+---
+title: "setup"
+author: "Pence"
+date: "7/12/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r}
+download.file("https://www1.nyc.gov/site/planning/data-maps/open-data/districts-download-metadata.page", destfile, method, quiet = FALSE, mode = "w",
+              cacheOK = TRUE,
+              extra = getOption("download.file.extra"),
+              headers = NULL, )
+```
+
