@@ -1,3 +1,6 @@
+library(fs) 
+library(zip)
+
 file_url <- "https://www1.nyc.gov/assets/planning/download/zip/data-maps/open-data/nycc_21b.zip"
 zip_file <- path("raw", "nycc_21b")
 shp_file <- path("raw", "nycc.shp")
