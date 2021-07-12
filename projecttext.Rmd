@@ -1,10 +1,3 @@
----
-title: "Pence.Parker.Project"
-author: "Pence"
-date: "6/24/2021"
-output: html_document
----
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
@@ -15,65 +8,31 @@ library(tidyverse)
 library(sf)
 #install.packages("lubridate")
 library(lubridate)
+#install.packages("janitor")
+library(janitor)
 ```
 
 
 ```{r}
-HousingData<- read.csv("C:/Users/waddes/Documents/GitHub/Pence.Parker.Project/data/raw/HousingDB_post2010_inactive_included.csv")
-councilmemberdata<- read.csv("C:/Users/waddes/Documents/GitHub/Pence.Parker.Project/data/raw/city.council.database.xlsx - data.csv", strip.white=TRUE)
+cc_members <- read_csv(
+    "data/raw/city.council.database.xlsx - data.csv",
+    col_types = cols(
+        start.date = col_date("%m/%d/%Y"),
+        end.date = col_date("%m/%d/%Y")
+    )
+)
+permits <- read_csv("data/raw/HousingDB_post2010_inactive_included.csv")
 ```
-Separate projects permitted prior to 2010
 
-*How do I save processed data as new data set in github?*
-
-format start and end dates as dates
+Drop permits prior to 2014 when new districts first came into effect
 ```{r}
-councilmemberdata$start.date <- as.Date(councilmemberdata$start.date, format = "%m/%d/%Y")
+post_2013_permits<- subset(permits, PermitYear >= 2014)
 
-councilmemberdata$end.date <- as.Date(councilmemberdata$end.date , format = "%m/%d/%Y")
+permits_joined <- post_2013_permits %>%
+    filter(DateFiled >= "2010-01-01") %>% # 65,100
+    left_join(cc_members, by = c("CouncilDst" = "district")) %>%
+    filter(DateFiled %within% interval(start.date, end.date)) # 65,100
 
+get_dupes(permits_joined) # No duplicate combinations found (using all cols)
 ```
 
-Drop project permits prior to 2014 due to redistricting and any projects permitted in years in which its district had two different councilors
-```{r}
-post_2013_permits<- subset(HousingData, PermitYear >= 2014)
-
-post_2013_permits_dropped_splits<-subset(post_2013_permits, !(CouncilDst==9 & PermitYear==2017) & !(CouncilDst==12 & PermitYear==2020) & !(CouncilDst==17 & PermitYear==2016) & !(CouncilDst==23 & PermitYear==2015) & !(CouncilDst==24 & PermitYear==2020) & !(CouncilDst==28 & PermitYear==2017) & !(CouncilDst==31 & PermitYear==2020) & !(CouncilDst==37 & PermitYear==2020) & !(CouncilDst==45 & PermitYear==2019) & !(CouncilDst==51 & PermitYear==2015))
-```
-
-
-```{r}
-post_2013_councilmembers<- subset(councilmemberdata, start.date >= as.Date("2014-01-01"))
-```
-
-
-Clean council member names
-```{r}
-str_trim(post_2013_councilmembers$council.member, side = c("both"))
-names.split <- strsplit(unlist(post_2013_councilmembers$council.member), " ")
-
-name.first <- sapply(names.split, function(x) x[1])
-name.last <- sapply(names.split, function(x)
-
-  if(length(x) == 0) {NA} else if (x[length(x)] %in% c("Jr.", "Jr", "Sr.", "Sr")) { gsub("[[:punct:]]", "", x[length(x) - 1])} else {x[length(x)]})
-```
-```{r}
-post_2013_permits_dropped_splits_years_fixed<-mutate(post_2013_permits_dropped_splits, PermitYear = lubridate::ymd(PermitYear, truncated = 2L))
-```
-
-```{r}
-seq.Date(post_2013_councilmembers, start.date, end.date, by ="year", )
-```
-
-Renata merge attempt 1
-```{r}
-left_join(post_2013_permits_dropped_splits_years_fixed, post_2013_councilmembers, by = c("CouncilDst" = "district")) %>% 
-    filter(PermitYear %within% interval(start.date, end.date))
-```
-
-Renata merge if I have to map
-```{r}
-left_join(post_2013_permits_dropped_splits_years_fixed, post_2013_councilmembers, by = c("CouncilDst" = "district")) %>% 
-    filter(pmap_lgl(list(PermitYear, start.date, end.date), ~ ..1 %within% interval(..2, ..3)))
-```
-group

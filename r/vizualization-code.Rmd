@@ -20,3 +20,8 @@ councilmemberdf<-group_by(permits_by_councilor, council.member, CouncilDst) %>%
 summarise(tot_new = sum(ClassANet))
 ```
 
+Renata merge if I have to map
+```{r}
+left_join(post_2013_permits_dropped_splits_years_fixed, post_2013_councilmembers, by = c("CouncilDst" = "district")) %>% 
+    filter(pmap_lgl(list(PermitYear, start.date, end.date), ~ ..1 %within% interval(..2, ..3)))
+```
