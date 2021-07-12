@@ -24,7 +24,7 @@ summarise(tot_new = sum(ClassANet))
 
 ```{r}
 source(path("r", "01_download_cc_districts.R"))
-cc_districts  <- sf_read("nycc_21b/nycc.shp")
+cc_districts  <- read_sf("data/nycc_21b/nycc.shp")
 ```
 
 
