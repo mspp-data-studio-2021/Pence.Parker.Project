@@ -1,0 +1,13 @@
+file_url <- "https://www1.nyc.gov/assets/planning/download/zip/data-maps/open-data/nycc_21b.zip"
+zip_file <- path("raw", "nycc_21b")
+shp_file <- path("raw", "nycc.shp")
+
+if (!file_exists(zip_file) & !file_exists(shp_file)) {
+  download.file(file_url, zip_file, mode = "wb")
+}
+
+if (!file_exists(shp_file)) {
+  unzip(zip_file, exdir = path("raw", "nycc_21b"))
+}
+
+file_delete(zip_file)
