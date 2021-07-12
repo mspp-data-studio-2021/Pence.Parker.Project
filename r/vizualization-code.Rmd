@@ -24,7 +24,7 @@ summarise(tot_new = sum(ClassANet))
 
 ```{r}
 source(path("r", "01_download_cc_districts.R"))
-cc_districts  <- read_sf("data/nycc_21b/nycc.shp")
+cc_districts  <- read_sf("C:/Users/waddes/Documents/GitHub/Pence.Parker.Project/data/nycc_21b")
 ```
 
 
@@ -35,7 +35,7 @@ permits_sf <- st_as_sf(permits_joined, coords = c("Longitude", "Latitude"), crs 
 permits_sf_ny <- st_transform(permits_sf, 2263)
 
 ggplot() +
-  geom_sf(data = nyc_tracts) +
+  geom_sf(data = cc_districts) +
   geom_sf(data = permits_sf_ny)
 ```
 
