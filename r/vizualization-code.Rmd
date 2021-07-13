@@ -7,24 +7,36 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+#install.packages("maps")
+library(maps)
+#install.packages("tmap")
+library(tmap)
+#install.packages("plotly")
+library(plotly)
+#install.packages("devtools")
+devtools::install_github("zachcp/nycmaps")
+#install.packages("nycmaps")
+libary(nycmaps)
+map(database="nyc")
 ```
 
 ```{r}
-councildf<-group_by(post_2013_permits, CouncilDst) %>%
+council_district_df<-group_by(post_2013_permits, CouncilDst) %>%
 summarise(tot_new = sum(ClassANet))
 qplot(x = CouncilDst, y = tot_new, data = councildf, geom = "col")
 ```
 
+
+
 ```{r}
-councilmemberdf<-group_by(permits_by_councilor, council.member, CouncilDst) %>%
+council_member_df<-group_by(permits_joined, council.member, CouncilDst) %>%
 summarise(tot_new = sum(ClassANet))
 ```
 
 
-
 ```{r}
 source(path("r", "01_download_cc_districts.R"))
-cc_districts  <- read_sf("C:/Users/waddes/Documents/GitHub/Pence.Parker.Project/data/nycc_21b")
+cc_districts_sf  <- read_sf("C:/Users/waddes/Documents/GitHub/Pence.Parker.Project/data/nycc_21b")
 ```
 
 
@@ -34,13 +46,12 @@ permits_sf <- st_as_sf(permits_joined, coords = c("Longitude", "Latitude"), crs 
 
 permits_sf_ny <- st_transform(permits_sf, 2263)
 
-ggplot() +
-  geom_sf(data = cc_districts) +
-  geom_sf(data = permits_sf_ny)
+
 ```
 
+
 ```{r}
-permits <- read_csv("data/raw/HousingDB_post2010_inactive_included.csv")
+permits <- read_csv("data/HousingDB_post2010_inactive_included.csv")
 ```
 
 
@@ -63,4 +74,37 @@ tm_dots(
   legend.z = NA,
 )
 ```
+
+ggplot map
+```{r}
+# Get a data frame with longitude, latitude, and size of bubbles (a bubble = a city)
+nyc <- map_data("nyc")
+gg  <- ggplot()
+gg  <- gg + 
+         geom_map(
+           data=nyc, 
+           map=nyc,
+           aes(x=long, y=lat, map_id=region))
+gg
+
+data <- permits_sf_ny 
+
+data <- data %>%
+  arrange(ClassANet) %>%
+  mutate( mytext=paste(
+    "Year: ", PermitYear, "\n",
+    "Council Member: ", council.member, "\n",
+    "Net Housing: ", ClassANet, sep=""))
+
+ggplot() +
+    geom_polygon(data = nyc, aes(x=long, y = lat, group = group), fill="grey", alpha=0.3) +
+    geom_point(aes(x=long, y=lat, size=ClassANet, color=PermitYear, text=mytext, alpha=0.5) ) +
+    theme_void() +
+    coord_map() +
+    theme(legend.position = "none")
+
+p <- ggplotly(p, tooltip="text")
+p
+```
+  
   

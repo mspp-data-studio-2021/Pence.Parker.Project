@@ -10,9 +10,7 @@ library(sf)
 library(lubridate)
 #install.packages("janitor")
 library(janitor)
-#install.packages("tmap")
-library(tmap)
-install.packages("zip")
+#install.packages("zip")
 library(zip)
 ```
 
