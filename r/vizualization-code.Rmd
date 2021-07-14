@@ -13,11 +13,10 @@ library(maps)
 library(tmap)
 #install.packages("plotly")
 library(plotly)
-#install.packages("devtools")
-devtools::install_github("zachcp/nycmaps")
-#install.packages("nycmaps")
-library(nycmaps)
-map(database="nyc")
+#install.packages("mapboxer")
+library(mapboxer)
+#install.packages("viridis")
+library(viridis)
 ```
 
 ```{r}
@@ -89,16 +88,49 @@ data <- data %>%
     "Council Member: ", council.member, "\n",
     "Net Housing: ", ClassANet, sep=""))
 
+geom_polygon(data = nyc, aes(x=long, y = lat, group = group), fill="grey", alpha=0.3)
+
+mybreaks <- c(2014, 2015, 2016, 2017, 2018, 2019, 2020)
+
 p <- data %>%
 ggplot() +
-  geom_polygon(data = nyc, aes(x=long, y = lat, group = group), fill="grey", alpha=0.3) +
-  geom_sf_label(data=cc_districts_sf, aes(label= CounDist))+
-  geom_point(data = permits_sf_ny, size=permits_sf_ny$ClassANet, color=permits_sf_ny$PermitYear, alpha=0.5) +
-    theme_void() +
-  theme(legend.position = "none")
+   geom_sf(data=cc_districts_sf) +
+  geom_sf(data = permits_sf_ny, aes(size = ClassANet, color = factor(PermitYear)), alpha=0.1) +
+    scale_size_continuous(name="Net Housing") +
+    scale_color_discrete(breaks=mybreaks, name="Permit Year" )
+   
+
 
 p <- ggplotly(p, tooltip="text")
 p
+
+p <- data %>%
+ggplot() +
+   geom_sf(data=cc_districts_sf) +
+  geom_sf(data = permits_sf_ny, aes(color = ClassANet), alpha=0.1) +
+    scale_color_viridis( begin = 0,
+  end = 1, name="Net Housing" )
+p <- ggplotly(p, tooltip="text")
+p
 ```
-  
+ 
+```{r}
+ 
+  as_mapbox_source(permits_sf_ny) %>%
+  # Setup a map with the default source above
+  mapboxer(
+    style = ("mapbox://styles/ppence17/streets-v11"),
+    center = c(-73.9165, 40.7114),
+    zoom = 10
+  ) %>%
+  # Add a navigation control
+  add_navigation_control() %>%
+  # Add a layer styling the data of the default source
+  add_circle_layer(
+    circle_color = c("PermitYear"),
+    circle_radius = c("ClassANet"),
+    # Use a mustache template to add popups to the layer
+    popup = "Net Houses: {{ClassANet}}"
+  )
+```
   
