@@ -39,3 +39,13 @@ permits_joined <- post_2013_permits_address %>%
 get_dupes(permits_joined) # No duplicate combinations found (using all cols)
 ```
 
+```{r}
+permits_joined<- subset(permits, PermitYear >= 2014)%>%
+    str_c(permits$AddressNum, ' ', permits$AddressSt) %>%
+    filter(DateFiled >= "2010-01-01") %>% # 65,100
+    left_join(cc_members, by = c("CouncilDst" = "district")) %>%
+    filter(DateFiled %within% interval(start.date, end.date)) # 65,100
+
+get_dupes(permits_joined) # No duplicate combinations found (using all cols)
+```
+
