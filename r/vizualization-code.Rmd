@@ -56,7 +56,10 @@ tm_bubbles(col = "ClassANet",
            alpha= 0.5,
            size = "ClassANet",
            scale = 0.2,
-           border.lwd = 1)+
+           border.lwd = 1,
+          title.col="Net Housing",
+		    popup.vars=c("Council Member: "="council.member", "Permit Year: "="PermitYear","Net Housing: "="ClassANet"),
+		    popup.format=list(a1=list(fun=function(PermitYear)formatC(PermitYear, digits=0, format="d")))+
 tm_shape(cc_districts_sf)+
 tm_borders(alpha=1)
 
