@@ -17,6 +17,8 @@ library(plotly)
 library(mapboxer)
 #install.packages("viridis")
 library(viridis)
+#install.packages("scales")
+library(scales)
 ```
 
 ```{r}
@@ -50,21 +52,14 @@ permits_sf_ny <- st_transform(permits_sf, 2263)
 ```{r}
 tmap_mode("view")
 tm_shape(permits_sf_ny)+
-tm_bubbles(col = "red",
+tm_bubbles(col = "ClassANet",
            alpha= 0.5,
            size = "ClassANet",
            scale = 0.2,
-           border.col = "black",
-           border.lwd = 1)
-tm_shape(permits_sf_ny)+
-tm_dots(
-  col = "black",
-  size = 0.02,
-  shape = 19,
-  title = NA,
-  legend.show = FALSE,
-  legend.z = NA,
-)
+           border.lwd = 1)+
+tm_shape(cc_districts_sf)+
+tm_borders(alpha=1)
+
 ```
 
 ggplot map
@@ -104,12 +99,17 @@ ggplot() +
 p <- ggplotly(p, tooltip="text")
 p
 
+cutoff <- 0.0
 p <- data %>%
 ggplot() +
    geom_sf(data=cc_districts_sf) +
   geom_sf(data = permits_sf_ny, aes(color = ClassANet), alpha=0.1) +
-    scale_color_viridis( begin = 0,
-  end = 1, name="Net Housing" )
+    scale_color_gradientn(colours = c("red4", "red", "yellow", "green"), 
+                         values = scales::rescale(c(0.01, cutoff - 0.0000000000000001, 
+                                                        cutoff, 0.2)), 
+                         breaks = c(cutoff), 
+                         label = c(cutoff),
+                         guide = guide_colourbar(nbin = 1000), name="Net Housing" )
 p <- ggplotly(p, tooltip="text")
 p
 ```
