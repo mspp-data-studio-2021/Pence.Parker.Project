@@ -6,8 +6,6 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 #install.packages("sf")
 library(sf)
-#install.packages("lubridate")
-library(lubridate)
 #install.packages("janitor")
 library(janitor)
 #install.packages("zip")
@@ -28,24 +26,12 @@ permits <- read_csv("data/HousingDB_post2010_inactive_included.csv")
 
 Drop permits prior to 2014 when new districts first came into effect
 ```{r}
-post_2013_permits<- subset(permits, PermitYear >= 2014)%>%
-    str_c(post_2013_permits$AddressNum, ' ', post_2013_permits$AddressSt)
-
-permits_joined <- post_2013_permits_address %>%
-    filter(DateFiled >= "2010-01-01") %>% # 65,100
+permits_joined <- permits %>%
+    filter(DateFiled >= "2014-01-01") %>% # 44,495
     left_join(cc_members, by = c("CouncilDst" = "district")) %>%
-    filter(DateFiled %within% interval(start.date, end.date)) # 65,100
-
+    filter(DateFiled %within% interval(start.date, end.date)) # 44,495
 get_dupes(permits_joined) # No duplicate combinations found (using all cols)
 ```
 
-```{r}
-permits_joined<- subset(permits, PermitYear >= 2014)%>%
-    str_c(permits$AddressNum, ' ', permits$AddressSt) %>%
-    filter(DateFiled >= "2010-01-01") %>% # 65,100
-    left_join(cc_members, by = c("CouncilDst" = "district")) %>%
-    filter(DateFiled %within% interval(start.date, end.date)) # 65,100
 
-get_dupes(permits_joined) # No duplicate combinations found (using all cols)
-```
 

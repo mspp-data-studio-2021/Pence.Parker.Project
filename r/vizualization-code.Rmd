@@ -13,16 +13,13 @@ library(maps)
 library(tmap)
 #install.packages("plotly")
 library(plotly)
-#install.packages("mapboxer")
-library(mapboxer)
-#install.packages("viridis")
 
 ```
 
 ```{r}
-council_district_df<-group_by(post_2013_permits, CouncilDst) %>%
+council_district_df<-group_by(permits_joined, CouncilDst) %>%
 summarise(tot_new = sum(ClassANet))
-qplot(x = CouncilDst, y = tot_new, data = councildf, geom = "col")
+qplot(x = CouncilDst, y = tot_new, data = council_district_df, geom = "col")
 ```
 
 
@@ -64,75 +61,6 @@ tm_borders(alpha=1)
 
 ```
 
-ggplot map
-```{r}
-# Get a data frame with longitude, latitude, and size of bubbles (a bubble = a city)
-nyc <- map_data("nyc")
-gg  <- ggplot()
-gg  <- gg + 
-         geom_map(
-           data=nyc, 
-           map=nyc,
-           aes(x=long, y=lat, map_id=region))
-gg
-
-data <- permits_sf_ny 
-
-data <- data %>%
-  arrange(ClassANet) %>%
-  mutate(mytext= paste(
-    "Year: ", PermitYear, "\n",
-    "Council Member: ", council.member, "\n",
-    "Net Housing: ", ClassANet, sep=""))
-
-geom_polygon(data = nyc, aes(x=long, y = lat, group = group), fill="grey", alpha=0.3)
-
-mybreaks <- c(2014, 2015, 2016, 2017, 2018, 2019, 2020)
-
-p <- data %>%
-ggplot() +
-   geom_sf(data=cc_districts_sf) +
-  geom_sf(data = permits_sf_ny, aes(size = ClassANet, color = factor(PermitYear)), alpha=0.1) +
-    scale_size_continuous(name="Net Housing") +
-    scale_color_discrete(breaks=mybreaks, name="Permit Year" )
-   
 
 
-p <- ggplotly(p, tooltip="text")
-p
-
-cutoff <- 0.0
-p <- data %>%
-ggplot() +
-   geom_sf(data=cc_districts_sf) +
-  geom_sf(data = permits_sf_ny, aes(color = ClassANet), alpha=0.1) +
-    scale_color_gradientn(colours = c("red4", "red", "yellow", "green"), 
-                         values = scales::rescale(c(0.01, cutoff - 0.0000000000000001, 
-                                                        cutoff, 0.2)), 
-                         breaks = c(cutoff), 
-                         label = c(cutoff),
-                         guide = guide_colourbar(nbin = 1000), name="Net Housing" )
-p <- ggplotly(p, tooltip="text")
-p
-```
- 
-```{r}
- 
-  as_mapbox_source(permits_sf_ny) %>%
-  # Setup a map with the default source above
-  mapboxer(
-    style = ("mapbox://styles/ppence17/streets-v11"),
-    center = c(-73.9165, 40.7114),
-    zoom = 10
-  ) %>%
-  # Add a navigation control
-  add_navigation_control() %>%
-  # Add a layer styling the data of the default source
-  add_circle_layer(
-    circle_color = c("PermitYear"),
-    circle_radius = c("ClassANet"),
-    # Use a mustache template to add popups to the layer
-    popup = "Net Houses: {{ClassANet}}"
-  )
-```
   
