@@ -10,6 +10,8 @@ library(sf)
 library(janitor)
 #install.packages("zip")
 library(zip)
+#install.packages("lubridate")
+library(lubridate)
 ```
 
 
@@ -33,5 +35,13 @@ permits_joined <- permits %>%
 get_dupes(permits_joined) # No duplicate combinations found (using all cols)
 ```
 
+```{r}
+permits_landmarks <- permits %>%
+    filter(DateFiled >= "2014-01-01") %>% # 44,495
+    filter(Landmark== "Yes") %>%
+    left_join(cc_members, by = c("CouncilDst" = "district")) %>%
+    filter(DateFiled %within% interval(start.date, end.date)) # 44,495
+get_dupes(permits_joined) # No duplicate combinations found (using all cols)
+```
 
 

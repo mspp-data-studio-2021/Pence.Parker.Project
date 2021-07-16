@@ -26,7 +26,15 @@ qplot(x = CouncilDst, y = tot_new, data = council_district_df, geom = "col")
 
 ```{r}
 council_member_df<-group_by(permits_joined, council.member, CouncilDst) %>%
-summarise(tot_new = sum(ClassANet))
+summarise(tot_new = sum(ClassANet)) 
+council_member_df$CouncilDst <- as.factor(council_member_df$CouncilDst)
+
+ggplot(council_member_df)+ 
+  geom_col(aes(CouncilDst, tot_new, fill = council.member), stat="identity", width=0.5, position = position_dodge(0.5), show.legend = FALSE)+
+   scale_y_continuous("Net Housing", expand = c(0, 0)) +
+  scale_x_discrete("Council District")+
+  scale_x_manual(values = c("#fee8c8", "#fdbb84", "#e34a33"))+
+  facet_grid( scale="free_x", space="free")
 ```
 
 
@@ -46,7 +54,7 @@ permits_sf_ny <- st_transform(permits_sf, 2263)
 
 ```{r}
 tmap_mode("view")
-tm_shape(permits_sf_ny)+
+Housing_Map<-tm_shape(permits_sf_ny)+
 tm_bubbles(col = "ClassANet",
            alpha= 0.5,
            size = "ClassANet",
@@ -54,13 +62,40 @@ tm_bubbles(col = "ClassANet",
            border.lwd = 1,
           title.col="Net Housing",
 		    popup.vars=c("Council Member: "="council.member", "Permit Year: "="PermitYear","Net Housing: "="ClassANet"),
-		    popup.format=list(PermitYear=list(fun=function(PermitYear)formatC(PermitYear, digits=0, format="d"))))+
+		    popup.format=list(PermitYear=list(fun=function(PermitYear)formatC(PermitYear, digits=0, format="d"))),
+		   shapes.legend = "ClassANet" )+
 tm_shape(cc_districts_sf)+
   tm_text("CounDist")+
 tm_borders(alpha=1)
 
+tmap_save(Housing_Map, "C:/Users/waddes/Documents/GitHub/Pence.Parker.Project/images/Housing_Map.html")
 ```
 
+```{r}
+permits_landmarks_sf <- st_as_sf(permits_landmarks, coords = c("Longitude", "Latitude"), crs = 4326)
+
+permits_landmarks_sf_ny <- st_transform(permits_landmarks_sf, 2263)
+```
+
+```{r}
+tmap_mode("view")
+Landmark_Housing_Map<-tm_shape(permits_landmarks_sf_ny)+
+tm_bubbles(col = "ClassANet",
+           alpha= 0.5,
+           size = "ClassANet",
+           scale = 0.2,
+           border.lwd = 1,
+          title.col="Net Housing",
+		    popup.vars=c("Council Member: "="council.member", "Permit Year: "="PermitYear","Net Housing: "="ClassANet"),
+		    popup.format=list(PermitYear=list(fun=function(PermitYear)formatC(PermitYear, digits=0, format="d"))),
+		   shapes.legend = "ClassANet",
+             shapes.legend.fill = "ClassANet" )+
+tm_shape(cc_districts_sf)+
+  tm_text("CounDist")+
+tm_borders(alpha=1)
+
+tmap_save(Landmark_Housing_Map, "C:/Users/waddes/Documents/GitHub/Pence.Parker.Project/images/Landmark_Housing_Map.html")
+```
 
 
   
