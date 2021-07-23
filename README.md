@@ -24,6 +24,7 @@ City Council District Shapefile:
 Run Rmd files in following order:
 
 01_projecttext.Rmd
+unzi
 02_visualization-code.Rmd
 
 <h4> Analysis </h4>
