@@ -18,29 +18,30 @@ library(plotly)
 
 
 ```{r}
-cc_districts_sf  <- read_sf("data/nycc_21b")
+City_Council_Districts  <- read_sf("data/nycc_21b")
+School_Districts <- read_sf("data/nysd_21b")
 ```
 
 ```{r}
 permits_sf <- st_as_sf(permits_joined, coords = c("Longitude", "Latitude"), crs = 4326)
-permits_sf_ny <- st_transform(permits_sf, 2263)
+All_Housing_Permits <- st_transform(permits_sf, 2263)
 ```
 
 ```{r}
 permits_landmarks_sf <- st_as_sf(permits_landmarks, coords = c("Longitude", "Latitude"), crs = 4326)
-permits_landmarks_sf_ny <- st_transform(permits_landmarks_sf, 2263)
+Landmarked_Housing_Permits <- st_transform(permits_landmarks_sf, 2263)
 ```
 
 ```{r}
-permits_sf_ny$address <- paste(permits_sf_ny$AddressNum, permits_sf_ny$AddressSt)
-permits_landmarks_sf_ny$address <- paste(permits_landmarks_sf_ny$AddressNum, permits_landmarks_sf_ny$AddressSt)
+All_Housing_Permits$address <- paste(All_Housing_Permits$AddressNum, All_Housing_Permits$AddressSt)
+Landmarked_Housing_Permits$address <- paste(Landmarked_Housing_Permits$AddressNum, Landmarked_Housing_Permits$AddressSt)
 ```
 
 
 ```{r}
 tmap_mode("view")
 Housing_Map<-tm_basemap("Esri.WorldGrayCanvas")+
-  tm_shape(permits_sf_ny)+
+  tm_shape(All_Housing_Permits)+
 tm_bubbles(col = "ClassANet",
            alpha= 0.5,
            size = "ClassANet",
@@ -53,7 +54,7 @@ tm_bubbles(col = "ClassANet",
 		    popup.vars=c("Council Member: "="council.member", "Permit Year: "="PermitYear","Net Housing: "="ClassANet"),
 		    popup.format=list(PermitYear=list(fun=function(PermitYear)formatC(PermitYear, digits=0, format="d"))),
 		   shapes.legend = "ClassANet" )+
-  tm_shape(permits_landmarks_sf_ny)+
+  tm_shape(Landmarked_Housing_Permits)+
 tm_bubbles(col = "ClassANet",
            id= "address",
            alpha= 0.5,
@@ -65,9 +66,12 @@ tm_bubbles(col = "ClassANet",
            title.col="Net Housing",
 		    popup.vars=c("Council Member: "="council.member", "Permit Year: "="PermitYear","Net Housing: "="ClassANet"),
 		    popup.format=list(PermitYear=list(fun=function(PermitYear)formatC(PermitYear, digits=0, format="d"))))+
-tm_shape(cc_districts_sf)+
+tm_shape(City_Council_Districts)+
   tm_text("CounDist")+
+tm_borders(alpha=1)+
+  tm_shape(School_Districts)+
+  tm_text("SchoolDist")+
 tm_borders(alpha=1)
   
-tmap_save(Housing_Map, "C:/Users/waddes/Documents/GitHub/Pence.Parker.Project/images/Housing_Map.html")
+tmap_save(Housing_Map, "/Users/ParkerPence/Documents/GitHub/Pence.Parker.Project/images/Housing_Map.html")
 ```
