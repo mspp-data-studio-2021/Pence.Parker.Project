@@ -18,7 +18,12 @@ Permit data:
 City Council Member Data:
 <a>https://drive.google.com/file/d/112DqnqHLhtxOfqeZLpX0VUK2_ot3g2ie/view?usp=sharing</a>
 
-Locally Download & Unzip City Council and School District Boundary Shapefiles via :
+Download & unzip City Council and school district boundary shapefiles locally via script: <br>
+
+r/01_download_districts.R
+
+or manually at: <br>
+
 <a>https://www1.nyc.gov/assets/planning/download/zip/data-maps/open-data/nycc_21b.zip</a>
 
 <h4> Format </h4> 
