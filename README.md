@@ -8,9 +8,7 @@ We look at housing permits along city council district borders to examine potent
 
 New city council districts were drawn in 2013 meaning only data from 2014 onward can be used with current boundaries
 
-<h4> Data </h4> 
-
-District B
+<u> <h4> Data </h4> </u>
 
 Permit data:
 <a>https://www1.nyc.gov/assets/planning/download/zip/data-maps/open-data/nychdb_inactiveincluded_20q4_csv.zip?r=a</a>
@@ -22,11 +20,11 @@ Download & unzip City Council and school district boundary shapefiles locally vi
 
 r/01_download_districts.R
 
-or manually at: <br>
+Or manually at: <br>
 
 <a>https://www1.nyc.gov/assets/planning/download/zip/data-maps/open-data/nycc_21b.zip</a>
 
-<h4> Format </h4> 
+<u><h4> Format </h4></u>
 
 Run Rmd files in following order:
 
@@ -34,7 +32,7 @@ Run Rmd files in following order:
 
 02_visualization-code.Rmd
 
-<h4> Analysis </h4>
+<u><h4> Analysis </h4></u>
 
 Analysis can be found at the following link:
 <a> https://kirkwoodgadfly.com/new-york-policy-data-project/ </a>
